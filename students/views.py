@@ -26,7 +26,6 @@ def student_create(request):
             parent_name=request.POST.get('parent_name'),
             parent_phone=request.POST.get('parent_phone'),
             parent_email=request.POST.get('parent_email'),
-            parent_relationship=request.POST.get('parent_relationship'),
             branch_id=request.POST.get('branch'),
             is_active=True if request.POST.get('is_active') == 'on' else False,
         )
