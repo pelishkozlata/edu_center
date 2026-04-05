@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subjects List</title>
+</head>
+<body>
+
+<h1>Subjects List</h1>
+
+{% for subject in subjects %}
+
+<div style="
+    background:#f2f2f2;
+    margin:10px 0;
+    padding:15px;
+    border-radius:8px;
+">
+
+    <strong>
+        {{ subject.name }}
+    </strong>
+
+    <p>
+        Branch: {{ subject.branch.name }}
+    </p>
+
+    <p>
+        Status: {{ subject.status }}
+    </p>
+
+</div>
+
+{% empty %}
+
+<p>No subjects found.</p>
+
+{% endfor %}
+
+</body>
+</html>
