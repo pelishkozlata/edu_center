@@ -21,21 +21,5 @@ Branches
     <p>No branches yet.</p>
 {% endif %}
 
-<body>
-    <h1>Branches</h1>
-
-    {% if branches %}
-        <ul>
-            {% for branch in branches %}
-                <li>
-                    {{ branch.name }} — {{ branch.city }} — {{ branch.status }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No branches yet.</p>
-    {% endif %}
-</body>
-</html>
 
 {% endblock %}
