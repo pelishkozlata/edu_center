@@ -1,50 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Students</title>
+{% extends 'base.html' %}
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+{% block title %}
+Students
+{% endblock %}
 
-        h1 {
-            color: #24384d;
-        }
-
-        .student-card {
-            background: #f5f5f5;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-        }
-    </style>
-</head>
-
-<body>
+{% block content %}
 
 <h1>Students List</h1>
 
 {% for student in students %}
+    <div class="student-card">
+        <strong>
+            {{ student.first_name }} {{ student.last_name }}
+        </strong>
 
-<div class="student-card">
-    <strong>
-        {{ student.first_name }}
-        {{ student.last_name }}
-    </strong>
-
-    <p>Email: {{ student.email }}</p>
-    <p>Phone: {{ student.phone }}</p>
-    
-</div>
-
+        <p>Email: {{ student.email }}</p>
+        <p>Phone: {{ student.phone }}</p>
+    </div>
 {% empty %}
-
-<p>No students found.</p>
-
+    <p>No students found.</p>
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}

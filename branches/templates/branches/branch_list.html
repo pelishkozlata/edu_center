@@ -1,9 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Branches</title>
-</head>
+{% extends 'base.html' %}
+
+{% block title %}
+Branches
+{% endblock %}
+
+{% block content %}
+
+<h1>Branches</h1>
+
+{% if branches %}
+    <ul>
+        {% for branch in branches %}
+            <li>
+                {{ branch.name }} — {{ branch.city }} — {{ branch.status }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No branches yet.</p>
+{% endif %}
+
 <body>
     <h1>Branches</h1>
 
@@ -20,3 +37,5 @@
     {% endif %}
 </body>
 </html>
+
+{% endblock %}
