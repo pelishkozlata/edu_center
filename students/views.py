@@ -2,6 +2,7 @@
 # Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Student
+from branches.models import Branch
 
 
 def student_list(request):
@@ -19,19 +20,19 @@ def student_create(request):
         Student.objects.create(
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name'),
-            dob=request.POST.get('dob'),
+            date_of_birth=request.POST.get('date_of_birth') or None,
             phone=request.POST.get('phone'),
-            email=request.POST.get('email'),
+            email=request.POST.get('email') or None,
             address=request.POST.get('address'),
             parent_name=request.POST.get('parent_name'),
             parent_phone=request.POST.get('parent_phone'),
-            parent_email=request.POST.get('parent_email'),
+            parent_email=request.POST.get('parent_email') or None,
+            parent_relationship=request.POST.get('parent_relationship'),
             branch_id=request.POST.get('branch'),
             is_active=True if request.POST.get('is_active') == 'on' else False,
         )
         return redirect('student_list')
 
-    from branches.models import Branch
     branches = Branch.objects.all()
     return render(request, 'students/student_form.html', {'branches': branches})
 
@@ -42,19 +43,19 @@ def student_update(request, pk):
     if request.method == 'POST':
         student.first_name = request.POST.get('first_name')
         student.last_name = request.POST.get('last_name')
-        student.dob = request.POST.get('dob')
+        student.date_of_birth = request.POST.get('date_of_birth') or None
         student.phone = request.POST.get('phone')
-        student.email = request.POST.get('email')
+        student.email = request.POST.get('email') or None
         student.address = request.POST.get('address')
         student.parent_name = request.POST.get('parent_name')
         student.parent_phone = request.POST.get('parent_phone')
-        student.parent_email = request.POST.get('parent_email')
+        student.parent_email = request.POST.get('parent_email') or None
+        student.parent_relationship = request.POST.get('parent_relationship')
         student.branch_id = request.POST.get('branch')
         student.is_active = True if request.POST.get('is_active') == 'on' else False
         student.save()
         return redirect('student_detail', pk=student.pk)
 
-    from branches.models import Branch
     branches = Branch.objects.all()
     return render(
         request,
