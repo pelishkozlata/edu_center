@@ -3,21 +3,6 @@ from branches.models import Branch
 from subjects.models import Subject
 from students.models import Student
 
-class StudentSubscription(models.Model):
-    STATUS_CHOICES = [
-        ('ACTIVE', 'Active'),
-        ('ARCHIVED', 'Archived'),
-    ]
-
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ACTIVE')
-
-    def __str__(self):
-        return f"{self.student} — {self.subscription_plan}"
-
 class SubscriptionPlan(models.Model):
     TYPE_CHOICES = [
         ('INDIVIDUAL', 'Individual'),
@@ -68,3 +53,5 @@ class StudentSubscription(models.Model):
 
     def __str__(self):
         return f"{self.student} — {self.subscription_plan}"
+    
+    

@@ -16,21 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import render
+from rest_framework.routers import DefaultRouter
+from groups.views import GroupViewSet, GroupStudentViewSet
 
 
-def home(request):
-    return render(request, 'home.html')
-
+router = DefaultRouter()
+router.register('groups', GroupViewSet)
+router.register('group-students', GroupStudentViewSet)
 
 urlpatterns = [
-    path('', home, name='home'),
     path('admin/', admin.site.urls),
-    path('branches/', include('branches.urls')),
-    path('students/', include('students.urls')),
-    path('subjects/', include('subjects.urls')),
-     path('groups/', include('groups.urls')),
-    path('lessons/', include('lessons.urls')),
-    path('attendance/', include('attendance.urls')),
-    path('subscriptions/', include('subscriptions.urls')),
+    path('api/', include(router.urls)),
 ]

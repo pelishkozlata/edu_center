@@ -1,21 +1,16 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Group
-from .forms import GroupForm
+from rest_framework import viewsets
+from .models import Group, GroupStudent
+from .serializers import GroupSerializer, GroupStudentSerializer
 
-def group_list(request):
-    groups = Group.objects.all()
-    return render(request, 'groups/list.html', {'groups': groups})
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    filterset_fields = ['branch', 'status']
+    search_fields = ['name']
+    ordering_fields = ['name', 'status', 'id']
 
-def group_create(request):
-    if request.method == 'POST':
-        form = GroupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('group_list')
-    else:
-        form = GroupForm()
-    return render(request, 'groups/form.html', {'form': form})
-
-def group_detail(request, pk):
-    group = get_object_or_404(Group, pk=pk)
-    return render(request, 'groups/detail.html', {'group': group})
+class GroupStudentViewSet(viewsets.ModelViewSet):
+    queryset = GroupStudent.objects.all()
+    serializer_class = GroupStudentSerializer
+    filterset_fields = ['group', 'student']
+    ordering_fields = ['join_date', 'leave_date', 'id']

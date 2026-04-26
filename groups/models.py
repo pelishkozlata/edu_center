@@ -21,16 +21,22 @@ class GroupStudent(models.Model):
     group = models.ForeignKey(
         Group,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='group_students'
     )
+
     student = models.ForeignKey(
         Student,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='group_students'
     )
 
     join_date = models.DateField(auto_now_add=True)
     leave_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('group', 'student')
 
     def __str__(self):
         return f"{self.student} in {self.group}"
