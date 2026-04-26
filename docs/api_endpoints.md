@@ -1,8 +1,9 @@
 # Planned API Endpoints
 
 ## Authentication
-POST /login/ — login by phone and password
-POST /logout/ — logout user
+POST /api/token/ — login by phone and password, get access and refresh tokens  
+POST /api/token/refresh/ — get new access token  
+POST /api/token/verify/ — verify token  
 
 ## Users
 GET /users/ — get list of users
