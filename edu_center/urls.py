@@ -20,11 +20,17 @@ from rest_framework.routers import DefaultRouter
 from groups.views import GroupViewSet, GroupStudentViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from lessons.views import LessonViewSet, LessonTemplateViewSet
 
 
 router = DefaultRouter()
+
 router.register('groups', GroupViewSet)
 router.register('group-students', GroupStudentViewSet)
+
+router.register('lessons', LessonViewSet)
+router.register('lesson-templates', LessonTemplateViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
