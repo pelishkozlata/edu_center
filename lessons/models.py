@@ -19,13 +19,6 @@ class Lesson(models.Model):
 
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
 
-    student = models.ForeignKey(
-        Student,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
     group = models.ForeignKey(
         Group,
         on_delete=models.SET_NULL,
@@ -61,3 +54,28 @@ class LessonStudent(models.Model):
 
     def __str__(self):
         return f"{self.student} in lesson {self.lesson.id}"
+    
+class LessonTemplate(models.Model):
+    TYPE_CHOICES = [
+        ('INDIVIDUAL', 'Individual'),
+        ('GROUP', 'Group'),
+    ]
+
+    STATUS_CHOICES = [
+        ('ACTIVE', 'Active'),
+        ('ARCHIVED', 'Archived'),
+    ]
+
+    type = models.CharField(max_length=15, choices=TYPE_CHOICES)
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+
+    weekday = models.IntegerField()  # 0 Monday, 6 Sunday
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='ACTIVE')
+
+    def __str__(self):
+        return f"{self.subject} template"
