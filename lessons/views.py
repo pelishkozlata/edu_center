@@ -33,3 +33,4 @@ def lesson_create(request):
 def lesson_detail(request, pk):
     lesson = get_object_or_404(Lesson, pk=pk)
     return render(request, 'lessons/detail.html', {'lesson': lesson})
+
