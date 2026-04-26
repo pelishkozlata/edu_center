@@ -1,36 +1,19 @@
-# lessons/views.py
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Lesson
-from .forms import LessonForm
-
-def lesson_list(request):
-    lessons = Lesson.objects.all()
-    return render(request, 'lessons/list.html', {'lessons': lessons})
-
-def lesson_create(request):
-    if request.method == 'POST':
-        form = LessonForm(request.POST)
-
-        if form.is_valid():
-            lesson = form.save(commit=False)
-
-            if lesson.type == 'INDIVIDUAL' and not lesson.student:
-                form.add_error('student', 'Required for individual lesson')
-
-            elif lesson.type == 'GROUP' and not lesson.group:
-                form.add_error('group', 'Required for group lesson')
-
-            else:
-                lesson.save()
-                return redirect('lesson_list')
-
-    else:
-        form = LessonForm()
-
-    return render(request, 'lessons/form.html', {'form': form})
+from rest_framework import viewsets
+from .models import Lesson, LessonTemplate
+from .serializers import LessonSerializer, LessonTemplateSerializer
 
 
-def lesson_detail(request, pk):
-    lesson = get_object_or_404(Lesson, pk=pk)
-    return render(request, 'lessons/detail.html', {'lesson': lesson})
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
 
+    filterset_fields = ['teacher', 'subject', 'group', 'student', 'status', 'type']
+    ordering_fields = ['start_datetime', 'end_datetime', 'id']
+
+
+class LessonTemplateViewSet(viewsets.ModelViewSet):
+    queryset = LessonTemplate.objects.all()
+    serializer_class = LessonTemplateSerializer
+
+    filterset_fields = ['teacher', 'subject', 'group', 'student', 'status', 'type']
+    ordering_fields = ['start_date', 'end_date', 'id']
