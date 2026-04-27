@@ -23,7 +23,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from lessons.views import LessonViewSet, LessonTemplateViewSet
 
 from users.views import LoginView, UserViewSet
-
+from branches.views import BranchViewSet
+from students.views import StudentViewSet
+from subjects.views import SubjectViewSet
 
 
 router = DefaultRouter()
@@ -35,6 +37,9 @@ router.register('lessons', LessonViewSet)
 router.register('lesson-templates', LessonTemplateViewSet)
 
 router.register('users', UserViewSet, basename='user')
+router.register('branches', BranchViewSet, basename='branch')
+router.register('students', StudentViewSet, basename='student')
+router.register('subjects', SubjectViewSet, basename='subject')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

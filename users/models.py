@@ -57,8 +57,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []  
 
     class Meta:
-        verbose_name = "Користувач"
-        verbose_name_plural = "Користувачі"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
 
     def __str__(self):
         return f"{self.phone} ({self.first_name} {self.last_name})".strip()

@@ -100,11 +100,14 @@ class LessonTemplate(models.Model):
         related_name='lesson_templates'
     )
 
-    weekdays = models.JSONField( blank=True, default=list)
+    weekdays = models.JSONField()
     # example: [0, 2] = Monday and Wednesday
 
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     status = models.CharField(
         max_length=15,

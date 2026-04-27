@@ -1,14 +1,8 @@
-from django.shortcuts import render
-
-# Create your views here.
+from rest_framework import viewsets, permissions
 from .models import Subject
+from .serializers import SubjectSerializer # Має збігатися з назвою вище
 
-
-def subject_list(request):
-    subjects = Subject.objects.select_related('branch').all()
-
-    return render(
-        request,
-        'subjects/subject_list.html',
-        {'subjects': subjects}
-    )
+class SubjectViewSet(viewsets.ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+    permission_classes = [permissions.AllowAny]
