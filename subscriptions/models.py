@@ -9,18 +9,22 @@ class SubscriptionPlan(models.Model):
         ('GROUP', 'Group'),
     ]
 
-    STATUS_CHOICES = [
-        ('ACTIVE', 'Active'),
-        ('ARCHIVED', 'Archived'),
-    ]
-
     name = models.CharField(max_length=100)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        related_name='plans'
+    )
+
+    subjects = models.ManyToManyField(
+        Subject,
+        related_name='plans'
+    )
 
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    subjects = models.ManyToManyField(Subject)
 
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ACTIVE')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -33,7 +37,7 @@ class PricingTier(models.Model):
         related_name='pricing_tiers'
     )
 
-    lessons_per_month = models.PositiveIntegerField()
+    lessons_per_month = models.IntegerField()
     price_per_lesson = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):
@@ -49,9 +53,9 @@ class StudentSubscription(models.Model):
     subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
+    start_date = models.DateField()
+
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ACTIVE')
 
     def __str__(self):
         return f"{self.student} — {self.subscription_plan}"
-    
-    
