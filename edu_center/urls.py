@@ -21,6 +21,7 @@ from groups.views import GroupViewSet, GroupStudentViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from lessons.views import LessonViewSet, LessonTemplateViewSet
+from attendance.views import AttendanceViewSet
 
 from users.views import LoginView, UserViewSet
 
@@ -34,6 +35,7 @@ router.register('group-students', GroupStudentViewSet)
 router.register('lessons', LessonViewSet)
 router.register('lesson-templates', LessonTemplateViewSet)
 
+router.register('attendance', AttendanceViewSet)
 router.register('users', UserViewSet, basename='user')
 
 urlpatterns = [
