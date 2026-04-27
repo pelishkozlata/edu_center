@@ -9,11 +9,17 @@ class Attendance(models.Model):
         ('ABSENT', 'Absent'),
     ]
 
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name='attendance_records'
+    )
+
     student = models.ForeignKey(
         Student,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        related_name='attendance_records'
     )
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)

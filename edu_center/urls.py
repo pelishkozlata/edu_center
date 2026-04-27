@@ -21,7 +21,12 @@ from groups.views import GroupViewSet, GroupStudentViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from lessons.views import LessonViewSet, LessonTemplateViewSet
-
+from attendance.views import AttendanceViewSet
+from subscriptions.views import (
+    SubscriptionPlanViewSet,
+    PricingTierViewSet,
+    StudentSubscriptionViewSet
+    )
 from users.views import LoginView, UserViewSet
 from branches.views import BranchViewSet
 from students.views import StudentViewSet
@@ -36,10 +41,17 @@ router.register('group-students', GroupStudentViewSet)
 router.register('lessons', LessonViewSet)
 router.register('lesson-templates', LessonTemplateViewSet)
 
+router.register('attendance', AttendanceViewSet)
 router.register('users', UserViewSet, basename='user')
 router.register('branches', BranchViewSet, basename='branch')
 router.register('students', StudentViewSet, basename='student')
 router.register('subjects', SubjectViewSet, basename='subject')
+
+router.register('subscription-plans', SubscriptionPlanViewSet)
+router.register('pricing-tiers', PricingTierViewSet)
+router.register('student-subscriptions', StudentSubscriptionViewSet)
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
