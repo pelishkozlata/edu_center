@@ -1,5 +1,34 @@
+from datetime import datetime, timedelta
 from rest_framework import serializers
+
 from .models import Lesson, LessonTemplate
+
+
+def has_lesson_conflict(teacher, student, group, start_datetime, end_datetime, lesson_id=None):
+    lessons = Lesson.objects.filter(
+        status='SCHEDULED',
+        start_datetime__lt=end_datetime,  # урок починається до кінця нового
+        end_datetime__gt=start_datetime   # урок закінчується після початку нового
+    )
+
+    if lesson_id:
+        lessons = lessons.exclude(id=lesson_id)
+
+    if lessons.filter(teacher=teacher).exists():
+        return "Teacher has another lesson at this time."
+
+    if student:
+        if lessons.filter(student=student).exists():
+            return "Student has another lesson at this time."
+
+    if group:
+        group_students = group.group_students.filter(leave_date__isnull=True) # ще не вийшли з групи
+
+        for group_student in group_students:
+            if lessons.filter(student=group_student.student).exists():
+                return f"Student {group_student.student} has another lesson at this time."
+
+    return None
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -11,6 +40,7 @@ class LessonSerializer(serializers.ModelSerializer):
         lesson_type = data.get('type')
         student = data.get('student')
         group = data.get('group')
+        teacher = data.get('teacher')
         start_datetime = data.get('start_datetime')
         end_datetime = data.get('end_datetime')
 
@@ -38,6 +68,18 @@ class LessonSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Start datetime must be before end datetime."
             )
+
+        conflict = has_lesson_conflict(
+            teacher=teacher,
+            student=student,
+            group=group,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            lesson_id=self.instance.id if self.instance else None
+        )
+
+        if conflict:
+            raise serializers.ValidationError(conflict)
 
         return data
 
@@ -82,7 +124,7 @@ class LessonTemplateSerializer(serializers.ModelSerializer):
                 "Lesson template must have at least one weekday."
             )
 
-        if not isinstance(weekdays, list): # перевіряємо чи weekdays це список
+        if not isinstance(weekdays, list):
             raise serializers.ValidationError(
                 "Weekdays must be a list."
             )
@@ -104,3 +146,44 @@ class LessonTemplateSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+    def create(self, validated_data):
+        template = LessonTemplate.objects.create(**validated_data)
+
+        current_date = template.start_date
+
+        while current_date <= template.end_date:
+            if current_date.weekday() in template.weekdays:
+                start_datetime = datetime.combine(
+                    current_date,
+                    template.start_time
+                )
+
+                end_datetime = datetime.combine(
+                    current_date,
+                    template.end_time
+                )
+
+                conflict = has_lesson_conflict(
+                    teacher=template.teacher,
+                    student=template.student,
+                    group=template.group,
+                    start_datetime=start_datetime,
+                    end_datetime=end_datetime
+                )
+
+                if not conflict:
+                    Lesson.objects.create(
+                        type=template.type,
+                        student=template.student,
+                        group=template.group,
+                        teacher=template.teacher,
+                        subject=template.subject,
+                        start_datetime=start_datetime,
+                        end_datetime=end_datetime,
+                        status='SCHEDULED'
+                    )
+
+            current_date += timedelta(days=1)
+
+        return template
