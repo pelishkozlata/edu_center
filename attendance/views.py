@@ -8,14 +8,14 @@ from rest_framework.exceptions import PermissionDenied
 class AttendanceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'TEACHER':
-            return Attendance.objects.filter(lesson__teacher=user) # attendance.lesson.teacher
+        if user.is_authenticated and getattr(user, 'role', None) == 'TEACHER':
+            return Attendance.objects.filter(lesson__teacher=user)
         return Attendance.objects.all()
 
     def get_permissions(self):
         user = self.request.user
-        if user.role == 'TEACHER':
-            return [IsAuthenticated()] # дозволено доступ, якщо він просто залогінений
+        if user.is_authenticated and getattr(user, 'role', None) == 'TEACHER':
+            return [IsAuthenticated()]
         return [IsAdminRole()]
     
     def perform_create(self, serializer):
