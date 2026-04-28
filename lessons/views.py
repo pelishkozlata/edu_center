@@ -9,15 +9,16 @@ from .serializers import LessonSerializer, LessonTemplateSerializer
 class LessonViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'TEACHER':
+        if user.is_authenticated and getattr(user, 'role', None) == 'TEACHER':
             return Lesson.objects.filter(teacher=user)
         return Lesson.objects.all()
-
+    
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [IsAuthenticated()]
         return [IsAdminRole()]
-
+    
+    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
     filterset_fields = ['teacher', 'subject', 'group', 'student', 'status', 'type']
