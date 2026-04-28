@@ -7,8 +7,8 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lessons', '0003_remove_lesson_students_and_more'),
-    ]
+       ('lessons', '0003_remove_lesson_students_remove_lessontemplate_weekday_and_more'),
+       ]
 
     operations = [
         migrations.AddField(
