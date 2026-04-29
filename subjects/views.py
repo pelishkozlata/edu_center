@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 from .models import Subject
-from .serializers import SubjectSerializer # Має збігатися з назвою вище
+from .serializers import SubjectSerializer
 from users.permissions import IsAdminRole
 
 class SubjectViewSet(viewsets.ModelViewSet):
