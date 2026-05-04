@@ -9,7 +9,7 @@ from .serializers import LessonSerializer, LessonTemplateSerializer
 class LessonViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated and getattr(user, 'role', None) == 'TEACHER':
+        if user.is_authenticated and getattr(user, 'role', None) == 'teacher':
             return Lesson.objects.filter(teacher=user)
         return Lesson.objects.all()
     
