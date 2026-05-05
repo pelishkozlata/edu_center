@@ -12,6 +12,5 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name', 
             'last_name', 
             'role', 
-            'branch', 
-            'is_staff'
+            'branch',
         ]

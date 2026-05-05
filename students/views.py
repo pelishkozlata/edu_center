@@ -1,13 +1,7 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from .models import Student
 from .serializers import StudentSerializer 
-from users.permissions import IsAdminRole
 
 class StudentViewSet(viewsets.ModelViewSet):
-    """
-    Цей клас автоматично замінює всі функції: 
-    list, create, retrieve, update, destroy.
-    """
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    permission_classes = [IsAdminRole]
