@@ -1,9 +1,13 @@
 # Python
-*.pyc
 __pycache__/
+*.py[cod]
+*.pyc
 *.pyo
 *.pyd
+
+# Database
 *.sqlite3
+db.sqlite3
 
 # Virtual environment
 venv/
@@ -12,9 +16,8 @@ venv/
 # Django
 *.log
 *.pot
-*.py[cod]
-db.sqlite3
-/staticfiles/
+staticfiles/
+media/
 
 # VS Code
 .vscode/
