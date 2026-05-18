@@ -7,26 +7,38 @@ from .serializers import LessonSerializer, LessonTemplateSerializer
 
 
 class LessonViewSet(viewsets.ModelViewSet):
+    serializer_class = LessonSerializer
+
     def get_queryset(self):
         user = self.request.user
+
+        qs = Lesson.objects.select_related(
+            "teacher",
+            "subject",
+            "student",
+            "group"
+        )
+
         if user.is_authenticated and getattr(user, 'role', None) == 'teacher':
-            return Lesson.objects.filter(teacher=user)
-        return Lesson.objects.all()
-    
+            qs = qs.filter(teacher=user)
+
+        return qs
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [IsAuthenticated()]
         return [IsAdminRole()]
-    
-    queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
 
     filterset_fields = ['teacher', 'subject', 'group', 'student', 'status', 'type']
     ordering_fields = ['start_datetime', 'end_datetime', 'id']
 
-
 class LessonTemplateViewSet(viewsets.ModelViewSet):
-    queryset = LessonTemplate.objects.all()
+    queryset = LessonTemplate.objects.select_related(
+        "teacher",
+        "subject",
+        "student",
+        "group"
+    )
     serializer_class = LessonTemplateSerializer
     permission_classes = [IsAdminRole]
 

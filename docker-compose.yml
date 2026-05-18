@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: edu_center
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: tprebgdd5736847528542812745235
 
     ports:
       - "5432:5432"
