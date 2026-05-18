@@ -10,32 +10,27 @@ class AttendanceSerializer(serializers.ModelSerializer):
         lesson = data.get('lesson')
         student = data.get('student')
 
-        if not lesson:
-            raise serializers.ValidationError(
-                "Attendance must be linked to a lesson."
-            )
-        if not student:
-            raise serializers.ValidationError(
-                "Attendance must have a student."
-            )
-        
-        # чи цей студент той, який привʼязаний до уроку
+        if not lesson or not student:
+            raise serializers.ValidationError("Lesson and student are required.")
+
+        if Attendance.objects.filter(lesson=lesson, student=student).exists():
+            raise serializers.ValidationError("Attendance already exists.")
+
         if lesson.type == "INDIVIDUAL":
             if lesson.student != student:
                 raise serializers.ValidationError(
-                    "This student is not assigned to the individual lesson."
+                    "Student not assigned to this lesson."
                 )
-            
+
         if lesson.type == "GROUP":
             if not lesson.group:
                 raise serializers.ValidationError(
                     "Group lesson must have a group."
                 )
-            
-        # перевірка що студент в групі
-            if not lesson.group.group_students.filter(student=student).exists():
+
+            if not lesson.group.group_students.filter(student_id=student.id).exists():
                 raise serializers.ValidationError(
-                    "This student is not in the group for this lesson."
+                    "Student not in group."
                 )
 
         return data

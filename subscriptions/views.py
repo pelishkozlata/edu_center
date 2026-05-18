@@ -5,7 +5,12 @@ from users.permissions import IsAdminRole
 
 
 class SubscriptionPlanViewSet(viewsets.ModelViewSet):
-    queryset = SubscriptionPlan.objects.all()
+    queryset = SubscriptionPlan.objects.select_related(
+        "branch"
+    ).prefetch_related(
+        "subjects"
+    )
+
     serializer_class = SubscriptionPlanSerializer
     permission_classes = [IsAdminRole]
 
@@ -13,18 +18,24 @@ class SubscriptionPlanViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name', 'type', 'is_active', 'id']
 
-
 class PricingTierViewSet(viewsets.ModelViewSet):
-    queryset = PricingTier.objects.all()
+    queryset = PricingTier.objects.select_related(
+        "subscription_plan"
+    )
+
     serializer_class = PricingTierSerializer
     permission_classes = [IsAdminRole]
 
     filterset_fields = ['subscription_plan', 'lessons_per_month']
     ordering_fields = ['lessons_per_month', 'price_per_lesson', 'id']
 
-
 class StudentSubscriptionViewSet(viewsets.ModelViewSet):
-    queryset = StudentSubscription.objects.all()
+    queryset = StudentSubscription.objects.select_related(
+        "student",
+        "subscription_plan",
+        "subject"
+    )
+
     serializer_class = StudentSubscriptionSerializer
     permission_classes = [IsAdminRole]
 

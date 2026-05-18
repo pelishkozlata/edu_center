@@ -1,37 +1,37 @@
-services: 
-  backend: 
-    build: . 
+services:
+  db:
+    image: postgres:16
+    container_name: edu_postgres
+
+    environment:
+      POSTGRES_DB: edu_center
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tprebgdd5736847528542812745235
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
     container_name: edu_backend
 
-  command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
 
-  volumes: 
-    - .:/app
+    volumes:
+      - .:/app
 
-  ports:
-    - "8000:8000"
+    ports:
+      - "8000:8000"
 
-  env_file: 
-    - .env
+    env_file:
+      - .env
 
-  depends_on: 
-    - db
+    depends_on:
+      db:
+        condition: service_started
 
-db: 
-  image: postgres:16
-
-  container_name: edu_postgres
-
-  environment: 
-  POSTGRES_DB: edu_center 
-  POSTGRES_USER: postgres 
-  POSTGRES_PASSWORD: postgres
-
-  ports: 
-  - "5432:5432"
-
-  volumes: 
-  - postgres_data:/var/lib/postgresql/data
-
-volumes: 
+volumes:
   postgres_data:

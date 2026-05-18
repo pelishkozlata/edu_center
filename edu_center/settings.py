@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-29vnnp@167z*m&u9lo3k(km^%_ecv92f84lnt+f1wa_4p)3342'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -131,10 +131,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
 AUTH_USER_MODEL = 'users.User'
 
 # Django REST Framework
