@@ -31,6 +31,12 @@ from users.views import LoginView, UserViewSet
 from branches.views import BranchViewSet
 from students.views import StudentViewSet
 from subjects.views import SubjectViewSet
+from django.http import JsonResponse
+
+def home(request):
+    return JsonResponse({
+        "message": "Edu Center API is running"
+    })
 
 
 router = DefaultRouter()
@@ -54,6 +60,7 @@ router.register('student-subscriptions', StudentSubscriptionViewSet)
 
 
 urlpatterns = [
+    path("", home),
     path('admin/', admin.site.urls),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
