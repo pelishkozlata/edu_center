@@ -1,7 +1,33 @@
 from rest_framework import serializers
 from datetime import timedelta
+from datetime import datetime
 from .models import Lesson, LessonTemplate
 
+def has_lesson_conflict(teacher, student, group, start_datetime, end_datetime, lesson_id=None):
+    lessons = Lesson.objects.filter(
+        status='SCHEDULED',
+        start_datetime__lt=end_datetime,  # урок починається до кінця нового
+        end_datetime__gt=start_datetime   # урок закінчується після початку нового
+    )
+
+    if lesson_id:
+        lessons = lessons.exclude(id=lesson_id)
+
+    if lessons.filter(teacher=teacher).exists():
+        return "Teacher has another lesson at this time."
+
+    if student:
+        if lessons.filter(student=student).exists():
+            return "Student has another lesson at this time."
+
+    if group:
+        group_students = group.group_students.filter(leave_date__isnull=True) # ще не вийшли з групи
+
+        for group_student in group_students:
+            if lessons.filter(student=group_student.student).exists():
+                return f"Student {group_student.student} has another lesson at this time."
+
+    return None
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
