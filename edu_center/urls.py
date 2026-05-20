@@ -41,7 +41,7 @@ router.register('group-students', GroupStudentViewSet)
 router.register('lessons', LessonViewSet)
 router.register('lesson-templates', LessonTemplateViewSet)
 
-router.register('attendance', AttendanceViewSet)
+router.register('attendance', AttendanceViewSet, basename='attendance')
 router.register('users', UserViewSet, basename='user')
 router.register('branches', BranchViewSet, basename='branch')
 router.register('students', StudentViewSet, basename='student')
