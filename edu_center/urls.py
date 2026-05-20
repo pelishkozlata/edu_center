@@ -35,7 +35,7 @@ from django.http import JsonResponse
 
 def home(request):
     return JsonResponse({
-        "message": "Edu Center API is running"
+        "message": "Welcome to Zlata's and Sofia's Edu Center! Visit /api/docs/ for API documentation."
     })
 
 
