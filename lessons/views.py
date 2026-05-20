@@ -8,6 +8,7 @@ from .serializers import LessonSerializer, LessonTemplateSerializer
 
 class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
 
     def get_queryset(self):
         user = self.request.user
