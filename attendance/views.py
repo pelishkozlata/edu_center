@@ -7,6 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 
     def get_queryset(self):

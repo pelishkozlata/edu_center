@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Lesson
+from datetime import timedelta
+from .models import Lesson, LessonTemplate
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -61,3 +62,108 @@ class LessonSerializer(serializers.ModelSerializer):
                 )
 
         return data
+    
+
+class LessonTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LessonTemplate
+        fields = '__all__'
+
+    def validate(self, data):
+        lesson_type = data.get('type')
+        student = data.get('student')
+        group = data.get('group')
+        weekdays = data.get('weekdays')
+        start_time = data.get('start_time')
+        end_time = data.get('end_time')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+
+        if lesson_type == 'INDIVIDUAL':
+            if not student:
+                raise serializers.ValidationError(
+                    "Individual lesson template must have a student."
+                )
+            if group:
+                raise serializers.ValidationError(
+                    "Individual lesson template cannot have a group."
+                )
+
+        if lesson_type == 'GROUP':
+            if not group:
+                raise serializers.ValidationError(
+                    "Group lesson template must have a group."
+                )
+            if student:
+                raise serializers.ValidationError(
+                    "Group lesson template cannot have a student."
+                )
+
+        if not weekdays:
+            raise serializers.ValidationError(
+                "Lesson template must have at least one weekday."
+            )
+
+        if not isinstance(weekdays, list):
+            raise serializers.ValidationError(
+                "Weekdays must be a list."
+            )
+        
+        for day in weekdays:
+            if day < 0 or day > 6:
+                raise serializers.ValidationError(
+                    "Each weekday must be between 0 and 6."
+                )
+
+        if start_time and end_time and start_time >= end_time:
+            raise serializers.ValidationError(
+                "Start time must be before end time."
+            )
+
+        if start_date and end_date and start_date > end_date:
+            raise serializers.ValidationError(
+                "Start date must be before or equal to end date."
+            )
+
+        return data
+    
+    def create(self, validated_data):
+        template = LessonTemplate.objects.create(**validated_data)
+
+        current_date = template.start_date
+
+        while current_date <= template.end_date:
+            if current_date.weekday() in template.weekdays:
+                start_datetime = datetime.combine(
+                    current_date,
+                    template.start_time
+                )
+
+                end_datetime = datetime.combine(
+                    current_date,
+                    template.end_time
+                )
+
+                conflict = has_lesson_conflict(
+                    teacher=template.teacher,
+                    student=template.student,
+                    group=template.group,
+                    start_datetime=start_datetime,
+                    end_datetime=end_datetime
+                )
+
+                if not conflict:
+                    Lesson.objects.create(
+                        type=template.type,
+                        student=template.student,
+                        group=template.group,
+                        teacher=template.teacher,
+                        subject=template.subject,
+                        start_datetime=start_datetime,
+                        end_datetime=end_datetime,
+                        status='SCHEDULED'
+                    )
+
+            current_date += timedelta(days=1)
+
+        return template
